@@ -4,13 +4,14 @@
 #include <login.h>
 
 dataBase *db;
+QString masterKey;
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     db = new dataBase;
     bool isAuthorized = false;
-    login l(&isAuthorized);
+    login l(&isAuthorized, &masterKey);
     l.show();
     l.loop.exec();
     if (!isAuthorized) {

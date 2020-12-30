@@ -2,13 +2,15 @@
 #include "ui_login.h"
 #include <QMessageBox>
 #include <reg.h>
+#include <QCryptographicHash>
 
 extern dataBase *db;
 
-login::login(bool *ptrToIsLoggedInMarker, QWidget *parent) :
+login::login(bool *ptrToIsLoggedInMarker, QString *ptrToMasterKey, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::login),
-    m_isSuccesfull(ptrToIsLoggedInMarker)
+    m_isSuccesfull(ptrToIsLoggedInMarker),
+    m_masterKey(ptrToMasterKey)
 {
     ui->setupUi(this);
     ui->pushButton_3->hide(); //reg button
@@ -20,7 +22,6 @@ login::login(bool *ptrToIsLoggedInMarker, QWidget *parent) :
         ui->pushButton->setEnabled(false);
         ui->lineEdit->setEnabled(false);
     }
-
 }
 
 login::~login()
@@ -38,6 +39,7 @@ void login::on_pushButton_clicked()
     } else {
         if (db->loginIntoApp(pswd.toUtf8())) {
             *m_isSuccesfull = true;
+            *m_masterKey = QCryptographicHash::hash(QCryptographicHash::hash(pswd.toUtf8(), QCryptographicHash::Sha3_224), QCryptographicHash::Sha3_256);
             loop.exit();
             login::close();
         } else {

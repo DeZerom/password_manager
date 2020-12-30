@@ -13,7 +13,7 @@ public:
     bool isRegistrated();
     bool loginIntoApp(const QByteArray pswd_arr);
     void registration(const QByteArray pswd_arr);
-    void addAcc(const QString name, const QString login, const QString pswd);
+    void addAcc(const QString name, const QString login, const QString pswd, const QString key);
     QSqlDatabase getDB();
     void deleteAcc(const int index);
     QString getPassword(const QString name, const QString login, const QString salt, const QString cypherPass);

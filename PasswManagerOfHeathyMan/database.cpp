@@ -102,14 +102,14 @@ QSqlDatabase dataBase::getDB()
     return m_db;
 }
 
-void dataBase::addAcc(const QString name, const QString login, const QString pswd)
+void dataBase::addAcc(const QString name, const QString login, const QString pswd, const QString key)
 {
     m_qry->prepare("INSERT INTO accountsData(name, login, pass, salt)"
                    "VALUES(:name, :login, :pass, :salt);");
 
     QString salt = m_cypher->generateSalt();
 
-    m_cypher->setKey(QCryptographicHash::hash((name + login + salt).toUtf8(), QCryptographicHash::Sha256));
+    m_cypher->setKey(QCryptographicHash::hash((key + salt).toUtf8(), QCryptographicHash::Sha256));
     QString pass = m_cypher->roundsEncr(pswd);
 
     m_qry->bindValue(":name", name);

@@ -3,6 +3,7 @@
 #include <QMessageBox>
 
 extern dataBase *db;
+extern QString masterKey;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -45,7 +46,7 @@ void MainWindow::on_addNewAcc_button_clicked()
         QMessageBox::information(this, "Добавление новой записи", "Пароль не должен быть пустым");
     }
 
-    db->addAcc(name, login, pswd);
+    db->addAcc(name, login, pswd, masterKey);
 
     m_model->select();
 }
