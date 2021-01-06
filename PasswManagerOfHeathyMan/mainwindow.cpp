@@ -3,7 +3,7 @@
 #include <QMessageBox>
 
 extern dataBase *db;
-extern QString masterKey;
+extern QString masterKey; //encrypted already
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_table->hideColumn(0);
     m_table->hideColumn(3);
     m_table->show();
+
+    ui->saveButton->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -58,7 +60,7 @@ void MainWindow::on_pushButton_clicked()
     if (!selection->hasSelection()) {
         QMessageBox::information(this, "Удаление", "Ничего не выбрано");
     } else {
-        //::selectedRows(column) returns QList thats way .count is used here
+        //::selectedRows(column) returns QList thats why .count is used here
         //we delete all of selected rows
         for (int i = 0; i < selection->selectedRows(0).count(); i++) {
             QModelIndex selectedItem = selection->selectedRows().at(i);
@@ -72,12 +74,10 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
 {
     int row = index.row();
 
-    QString name = index.sibling(row, 1).data().toString(),
-            login = index.sibling(row, 2).data().toString(),
-            cypherPass = index.sibling(row, 3).data().toString(),
+    QString cypherPass = index.sibling(row, 3).data().toString(),
             salt = index.sibling(row, 4).data().toString();
 
-    QString pass = db->getPassword(name, login, salt, cypherPass);
+    QString pass = db->getPassword(masterKey, salt, cypherPass);
 
     QClipboard *c = QGuiApplication::clipboard();
     c->setText(pass);

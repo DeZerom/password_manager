@@ -45,7 +45,7 @@
        <x>10</x>
        <y>20</y>
        <width>261</width>
-       <height>161</height>
+       <height>164</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -119,6 +119,32 @@
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>300</y>
+      <width>281</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Редактирование записи:</string>
+    </property>
+    <widget class="QPushButton" name="saveButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>261</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Сохранить изменения</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -126,7 +152,7 @@
      <x>0</x>
      <y>0</y>
      <width>678</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

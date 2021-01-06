@@ -16,7 +16,7 @@ public:
     void addAcc(const QString name, const QString login, const QString pswd, const QString key);
     QSqlDatabase getDB();
     void deleteAcc(const int index);
-    QString getPassword(const QString name, const QString login, const QString salt, const QString cypherPass);
+    QString getPassword(const QString masterkey, const QString salt, const QString cypherPass);
 
 private:
     void queryConstructor(const QString type, const QString table, const QVariant args[]);

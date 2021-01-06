@@ -136,9 +136,10 @@ void dataBase::deleteAcc(const int index)
     }
 }
 
-QString dataBase::getPassword(const QString name, const QString login, const QString salt, const QString cypherPass)
+QString dataBase::getPassword(const QString masterkey, const QString salt, const QString cypherPass)
 {
-   m_cypher->setKey(QCryptographicHash::hash((name + login + salt).toUtf8(), QCryptographicHash::Sha256));
+   QString key = QCryptographicHash::hash((masterkey + salt).toUtf8(), QCryptographicHash::Sha256);
+   m_cypher->setKey(key);
 
    QString password = m_cypher->roundsDecr(cypherPass);
 
