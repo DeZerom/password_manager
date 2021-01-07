@@ -14,12 +14,16 @@ public:
     bool loginIntoApp(const QByteArray pswd_arr);
     void registration(const QByteArray pswd_arr);
     void addAcc(const QString name, const QString login, const QString pswd, const QString key);
-    QSqlDatabase getDB();
     void deleteAcc(const int index);
+    void changeRecord(const int id, const QString args[], const bool isName = false, const bool isLogin = false, const bool isPass = false);
+    QSqlDatabase getDB();
     QString getPassword(const QString masterkey, const QString salt, const QString cypherPass);
 
 private:
     void queryConstructor(const QString type, const QString table, const QVariant args[]);
+    void changeRecordName(const int id, const QString newName);
+    void changeRecordLogin(const int id, const QString newLoging);
+    void changeRecordPass(const int id, const QString newPass);
 
     QSqlDatabase m_db;
     QSqlQuery *m_qry;

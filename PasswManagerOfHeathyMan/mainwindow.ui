@@ -131,7 +131,7 @@
     <property name="title">
      <string>Редактирование записи:</string>
     </property>
-    <widget class="QPushButton" name="saveButton">
+    <widget class="QPushButton" name="changeRecord">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -141,7 +141,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Сохранить изменения</string>
+      <string>Редактировать</string>
      </property>
     </widget>
    </widget>

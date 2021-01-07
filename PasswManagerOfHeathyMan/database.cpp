@@ -147,3 +147,29 @@ QString dataBase::getPassword(const QString masterkey, const QString salt, const
    return password;
 }
 
+void dataBase::changeRecordName(const int id, const QString newName)
+{
+
+}
+
+void dataBase::changeRecordLogin(const int id, const QString newLoging)
+{
+
+}
+
+void dataBase::changeRecordPass(const int id, const QString newPass)
+{
+
+}
+
+void dataBase::changeRecord(const int id, const QString args[], const bool isName, const bool isLogin, const bool isPass)
+{
+    //id - id of record
+    //args[] - new values
+    //bool params define if it must change corresponding field
+
+    if (isName) changeRecordName(id, args[0]);
+    if (isLogin) changeRecordLogin(id, args[1]);
+    if (isPass) changeRecordPass(id, args[2]);
+}
+

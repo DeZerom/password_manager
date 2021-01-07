@@ -22,8 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_table->hideColumn(0);
     m_table->hideColumn(3);
     m_table->show();
-
-    ui->saveButton->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -81,4 +79,12 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
 
     QClipboard *c = QGuiApplication::clipboard();
     c->setText(pass);
+}
+
+void MainWindow::on_changeRecord_clicked()
+{
+    changeRecord cr;
+    cr.show();
+    cr.loop.exec();
+
 }

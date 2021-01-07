@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    changerecord.cpp \
     cipher_test.cpp \
     database.cpp \
     login.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     reg.cpp
 
 HEADERS += \
+    changerecord.h \
     cipher_test.h \
     database.h \
     login.h \
@@ -31,6 +33,7 @@ HEADERS += \
     reg.h
 
 FORMS += \
+    changerecord.ui \
     login.ui \
     mainwindow.ui \
     reg.ui

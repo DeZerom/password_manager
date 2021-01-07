@@ -9,6 +9,7 @@
 #include <QItemSelectionModel>
 #include <cipher_test.h>
 #include <QClipboard>
+#include <changerecord.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,6 +29,8 @@ private slots:
     void on_pushButton_clicked();
 
     void on_tableView_doubleClicked(const QModelIndex &index);
+
+    void on_changeRecord_clicked();
 
 private:
     Ui::MainWindow *ui;

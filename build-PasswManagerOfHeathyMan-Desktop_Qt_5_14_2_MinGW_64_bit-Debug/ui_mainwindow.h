@@ -43,7 +43,7 @@ public:
     QGroupBox *groupBox_2;
     QPushButton *pushButton;
     QGroupBox *groupBox_3;
-    QPushButton *saveButton;
+    QPushButton *changeRecord;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -112,9 +112,9 @@ public:
         groupBox_3 = new QGroupBox(centralwidget);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         groupBox_3->setGeometry(QRect(370, 300, 281, 51));
-        saveButton = new QPushButton(groupBox_3);
-        saveButton->setObjectName(QString::fromUtf8("saveButton"));
-        saveButton->setGeometry(QRect(10, 20, 261, 21));
+        changeRecord = new QPushButton(groupBox_3);
+        changeRecord->setObjectName(QString::fromUtf8("changeRecord"));
+        changeRecord->setGeometry(QRect(10, 20, 261, 21));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -140,7 +140,7 @@ public:
         groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\265\320\275\320\270\320\265 \320\267\320\260\320\277\320\270\321\201\320\270:", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\320\275\320\270\320\265 \320\267\320\260\320\277\320\270\321\201\320\270:", nullptr));
-        saveButton->setText(QCoreApplication::translate("MainWindow", "\320\241\320\276\321\205\321\200\320\260\320\275\320\270\321\202\321\214 \320\270\320\267\320\274\320\265\320\275\320\265\320\275\320\270\321\217", nullptr));
+        changeRecord->setText(QCoreApplication::translate("MainWindow", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\321\202\321\214", nullptr));
     } // retranslateUi
 
 };
