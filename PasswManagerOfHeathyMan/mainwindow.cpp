@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_table->hideColumn(0);
     m_table->hideColumn(3);
     m_table->show();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -46,7 +48,11 @@ void MainWindow::on_addNewAcc_button_clicked()
         QMessageBox::information(this, "Добавление новой записи", "Пароль не должен быть пустым");
     }
 
-    db->addAcc(name, login, pswd, masterKey);
+    db->addAcc(name, login, pswd);
+
+    ui->lineEdit_name->setText("");
+    ui->lineEdit_login->setText("");
+    ui->lineEdit_pswd->setText("");
 
     m_model->select();
 }
@@ -75,7 +81,7 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
     QString cypherPass = index.sibling(row, 3).data().toString(),
             salt = index.sibling(row, 4).data().toString();
 
-    QString pass = db->getPassword(masterKey, salt, cypherPass);
+    QString pass = db->getPassword(salt, cypherPass);
 
     QClipboard *c = QGuiApplication::clipboard();
     c->setText(pass);
@@ -83,8 +89,21 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_changeRecord_clicked()
 {
-    changeRecord cr;
+    QItemSelectionModel *selection = m_table->selectionModel();
+    int id;
+    if (!selection->hasSelection()) {
+        QMessageBox::information(this, "Изменение записи", "Ничего не выбрано");
+        return;
+    } else if (selection->selectedRows().count() > 1) {
+        QMessageBox::information(this, "Изменение записи", "Невозможно изменить несколько записей одновременно");
+        return;
+    } else {
+        id = selection->selectedRows(0)[0].data().toInt();
+    }
+
+    changeRecord cr(id);
     cr.show();
     cr.loop.exec();
 
+    m_model->select();
 }

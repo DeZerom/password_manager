@@ -6,6 +6,8 @@
 #include <QCryptographicHash>
 #include <cipher_test.h>
 
+extern QString masterKey;
+
 class dataBase
 {
 public:
@@ -13,11 +15,11 @@ public:
     bool isRegistrated();
     bool loginIntoApp(const QByteArray pswd_arr);
     void registration(const QByteArray pswd_arr);
-    void addAcc(const QString name, const QString login, const QString pswd, const QString key);
+    void addAcc(const QString name, const QString login, const QString pswd);
     void deleteAcc(const int index);
-    void changeRecord(const int id, const QString args[], const bool isName = false, const bool isLogin = false, const bool isPass = false);
+    void changeRecord(const int id, const QVector<QString> args, const bool isName = false, const bool isLogin = false, const bool isPass = false);
     QSqlDatabase getDB();
-    QString getPassword(const QString masterkey, const QString salt, const QString cypherPass);
+    QString getPassword(const QString salt, const QString cypherPass);
 
 private:
     void queryConstructor(const QString type, const QString table, const QVariant args[]);

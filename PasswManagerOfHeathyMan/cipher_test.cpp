@@ -171,7 +171,7 @@ QString cipher_test::roundsEncr(const QString text)
     if (openT.length() % 4 != 0) {
         int i = 1;
         while ((openT.length() + i) % 4 != 0) i++;
-        openT = (i - 1) + openT;
+        openT = QString::number(i - 1) + openT;
         while (i - 1 > 0) {
             openT += "a";
             i--;
@@ -293,7 +293,8 @@ QString cipher_test::generateSalt()
 
     QString res = "";
     while (number > 0) {
-        res += number % 1000;
+        int currPart = number % 1000;
+        res += QChar(currPart);
         number /= 1000;
     }
 
