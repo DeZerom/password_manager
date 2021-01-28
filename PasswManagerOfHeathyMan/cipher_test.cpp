@@ -168,7 +168,8 @@ QString cipher_test::XORdecr(const QString cypher_text)
 QString cipher_test::roundsEncr(const QString text)
 {
     QString openT = text; //preparing text
-    if (openT.length() % 4 != 0) {
+    qDebug()<<openT.length() % 4;
+    if (openT.length() % 4 != long(0)) {
         int i = 1;
         while ((openT.length() + i) % 4 != 0) i++;
         openT = QString::number(i - 1) + openT;
@@ -177,8 +178,8 @@ QString cipher_test::roundsEncr(const QString text)
             i--;
         }
     } else {
-        openT = QChar(3) + openT;
-        openT += "abc";
+        openT = QString::number(4) + openT;
+        openT += "abcd";
     }
 
     QVector<QVector<int>> textParts{openT.length() / 4};
@@ -258,10 +259,11 @@ QString cipher_test::roundsDecr(const QString cypherT)
         }
     }
 
-    int leftSymbols = res[0].unicode();
+    qDebug()<<res;
+    int countOfLeftSymbols = res.left(1).toInt();
     res = res.right(res.length() - 1);
-    qDebug()<<leftSymbols;
-    if (leftSymbols <= 4) res = res.left(res.length() - leftSymbols);
+    qDebug()<<countOfLeftSymbols;
+    if (countOfLeftSymbols <= 4) res = res.left(res.length() - countOfLeftSymbols);
 
     qDebug()<<res;
     return res;

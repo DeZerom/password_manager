@@ -59,4 +59,6 @@ void changeRecord::on_pushButton_clicked()
     }
 
     db->changeRecord(m_id, args, isName, isLogin, isPass);
+
+    this->close();
 }

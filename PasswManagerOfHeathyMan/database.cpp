@@ -148,20 +148,18 @@ QString dataBase::getPassword(const QString salt, const QString cypherPass)
 
 void dataBase::changeRecordName(const int id, const QString newName)
 {
-    m_qry->prepare("UPDATE accountsData"
-                    "SET name = :newName"
-                    "WHERE id = :id;");
+    m_qry->prepare(QString("UPDATE accountsData SET name = :newName WHERE id = :id;"));
     m_qry->bindValue(":newName", newName);
-    m_qry->bindValue(":id", id);
+    m_qry->bindValue(":id", QString::number(id));
+    //qDebug()<<m_qry->boundValue(":newName");
+    //qDebug()<<m_qry->boundValue(":id");
 
     if (!m_qry->exec()) qDebug()<<"--CAN'T CHANGE RECORD'S NAME"<<m_qry->lastError().text();
 }
 
 void dataBase::changeRecordLogin(const int id, const QString newLoging)
 {
-    m_qry->prepare("UPDATE accountsData"
-                    "SET login = :newLogin"
-                    "WHERE id = :id;");
+    m_qry->prepare("UPDATE accountsData SET login = :newLogin WHERE id = :id;");
     m_qry->bindValue(":newLogin", newLoging);
     m_qry->bindValue(":id", id);
 
@@ -176,12 +174,8 @@ void dataBase::changeRecordPass(const int id, const QString newPass)
     m_cypher->setKey(QCryptographicHash::hash((masterKey + salt).toUtf8(), QCryptographicHash::Sha256));
     QString pass = m_cypher->roundsEncr(newPass);
 
-    m_qry->prepare("UPDATE accountsData"
-                    "SET"
-                    "   pass = :newPass,"
-                    "   salt = :newSalt"
-                    "WHERE id = :id;");
-    m_qry->bindValue(":newPass", newPass);
+    m_qry->prepare("UPDATE accountsData SET pass = :newPass, salt = :newSalt WHERE id = :id;");
+    m_qry->bindValue(":newPass", pass);
     m_qry->bindValue(":newSalt", salt);
     m_qry->bindValue(":id", id);
 
