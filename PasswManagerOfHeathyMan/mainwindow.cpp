@@ -1,3 +1,20 @@
+/*
+Copyright 2021, Demid Shikhov
+This file is part of PasswManagerOfHeathyMan.
+
+PasswManagerOfHeathyMan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+PasswManagerOfHeathyMan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with PasswManagerOfHeathyMan.  If not, see <https://www.gnu.org/licenses/>.
+*/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
@@ -12,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     m_table = ui->tableView;
+    m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_model = new QSqlTableModel(nullptr, db->getDB());
     m_model->setTable("accountsData");
     m_model->select();
@@ -21,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_table->setColumnWidth(2, 153);
     m_table->hideColumn(0);
     m_table->hideColumn(3);
+    m_table->hideColumn(4);
     m_table->show();
 
 
@@ -98,7 +117,8 @@ void MainWindow::on_changeRecord_clicked()
         QMessageBox::information(this, "Изменение записи", "Невозможно изменить несколько записей одновременно");
         return;
     } else {
-        id = selection->selectedRows(0)[0].data().toInt();
+        QModelIndexList selectedCells = selection->selectedIndexes();
+        id = selectedCells[0].siblingAtColumn(0).data().toInt();
     }
 
     changeRecord cr(id);
