@@ -1,3 +1,20 @@
+/*
+Copyright 2021, Demid Shikhov
+This file is part of PasswManagerOfHeathyMan.
+
+PasswManagerOfHeathyMan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+PasswManagerOfHeathyMan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with PasswManagerOfHeathyMan.  If not, see <https://www.gnu.org/licenses/>.
+*/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
@@ -12,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     m_table = ui->tableView;
+    m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_model = new QSqlTableModel(nullptr, db->getDB());
     m_model->setTable("accountsData");
     m_model->select();
@@ -21,7 +39,10 @@ MainWindow::MainWindow(QWidget *parent)
     m_table->setColumnWidth(2, 153);
     m_table->hideColumn(0);
     m_table->hideColumn(3);
+    m_table->hideColumn(4);
     m_table->show();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -46,7 +67,11 @@ void MainWindow::on_addNewAcc_button_clicked()
         QMessageBox::information(this, "Добавление новой записи", "Пароль не должен быть пустым");
     }
 
-    db->addAcc(name, login, pswd, masterKey);
+    db->addAcc(name, login, pswd);
+
+    ui->lineEdit_name->setText("");
+    ui->lineEdit_login->setText("");
+    ui->lineEdit_pswd->setText("");
 
     m_model->select();
 }
@@ -75,7 +100,7 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
     QString cypherPass = index.sibling(row, 3).data().toString(),
             salt = index.sibling(row, 4).data().toString();
 
-    QString pass = db->getPassword(masterKey, salt, cypherPass);
+    QString pass = db->getPassword(salt, cypherPass);
 
     QClipboard *c = QGuiApplication::clipboard();
     c->setText(pass);
@@ -83,8 +108,22 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_changeRecord_clicked()
 {
-    changeRecord cr;
+    QItemSelectionModel *selection = m_table->selectionModel();
+    int id;
+    if (!selection->hasSelection()) {
+        QMessageBox::information(this, "Изменение записи", "Ничего не выбрано");
+        return;
+    } else if (selection->selectedRows().count() > 1) {
+        QMessageBox::information(this, "Изменение записи", "Невозможно изменить несколько записей одновременно");
+        return;
+    } else {
+        QModelIndexList selectedCells = selection->selectedIndexes();
+        id = selectedCells[0].siblingAtColumn(0).data().toInt();
+    }
+
+    changeRecord cr(id);
     cr.show();
     cr.loop.exec();
 
+    m_model->select();
 }

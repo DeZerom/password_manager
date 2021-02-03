@@ -1,3 +1,20 @@
+/*
+Copyright 2021, Demid Shikhov
+This file is part of PasswManagerOfHeathyMan.
+
+PasswManagerOfHeathyMan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+PasswManagerOfHeathyMan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with PasswManagerOfHeathyMan.  If not, see <https://www.gnu.org/licenses/>.
+*/
 #include "database.h"
 #include <QCoreApplication>
 
@@ -6,7 +23,7 @@ dataBase::dataBase():
 {
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     QString path = QCoreApplication::applicationDirPath();
-    path += "db";
+    path += "/db";
 
     if (!QDir(path).exists()) QDir().mkdir(path);
     m_db.setDatabaseName(path + "/db.db");
@@ -73,7 +90,7 @@ bool dataBase::loginIntoApp(const QByteArray pswd_arr)
     } else {
         m_qry->first();
         QSqlRecord rec = m_qry->record();
-        pswd_hash_fromDb = m_qry->value(rec.indexOf("pass")).toString();
+        pswd_hash_fromDb = m_qry->value(rec.indexOf("pswd")).toString();
     }
 
     if (pswd_hash == pswd_hash_fromDb) {
@@ -86,7 +103,7 @@ bool dataBase::loginIntoApp(const QByteArray pswd_arr)
 void dataBase::registration(const QByteArray pswd_arr)
 {
     QString pswd_hash = QString(QCryptographicHash::hash(pswd_arr, QCryptographicHash::Sha256));
-    m_qry->prepare("INSERT INTO userinfo(pass)"
+    m_qry->prepare("INSERT INTO userinfo(pswd)"
                   "VALUES(:pswd);");
     m_qry->bindValue(":pswd", pswd_hash);
 
@@ -102,14 +119,14 @@ QSqlDatabase dataBase::getDB()
     return m_db;
 }
 
-void dataBase::addAcc(const QString name, const QString login, const QString pswd, const QString key)
+void dataBase::addAcc(const QString name, const QString login, const QString pswd)
 {
     m_qry->prepare("INSERT INTO accountsData(name, login, pass, salt)"
                    "VALUES(:name, :login, :pass, :salt);");
 
     QString salt = m_cypher->generateSalt();
 
-    m_cypher->setKey(QCryptographicHash::hash((key + salt).toUtf8(), QCryptographicHash::Sha256));
+    m_cypher->setKey(QCryptographicHash::hash((masterKey + salt).toUtf8(), QCryptographicHash::Sha256));
     QString pass = m_cypher->roundsEncr(pswd);
 
     m_qry->bindValue(":name", name);
@@ -136,40 +153,72 @@ void dataBase::deleteAcc(const int index)
     }
 }
 
-QString dataBase::getPassword(const QString masterkey, const QString salt, const QString cypherPass)
+QString dataBase::getPassword(const QString salt, const QString cypherPass)
 {
-   QString key = QCryptographicHash::hash((masterkey + salt).toUtf8(), QCryptographicHash::Sha256);
+   QString key = QCryptographicHash::hash((masterKey + salt).toUtf8(), QCryptographicHash::Sha256);
    m_cypher->setKey(key);
 
    QString password = m_cypher->roundsDecr(cypherPass);
-
 
    return password;
 }
 
 void dataBase::changeRecordName(const int id, const QString newName)
 {
+    m_qry->prepare(QString("UPDATE accountsData SET name = :newName WHERE id = :id;"));
+    m_qry->bindValue(":newName", newName);
+    m_qry->bindValue(":id", QString::number(id));
+    //qDebug()<<m_qry->boundValue(":newName");
+    //qDebug()<<m_qry->boundValue(":id");
 
+    if (!m_qry->exec()) qDebug()<<"--CAN'T CHANGE RECORD'S NAME"<<m_qry->lastError().text();
 }
 
 void dataBase::changeRecordLogin(const int id, const QString newLoging)
 {
+    m_qry->prepare("UPDATE accountsData SET login = :newLogin WHERE id = :id;");
+    m_qry->bindValue(":newLogin", newLoging);
+    m_qry->bindValue(":id", id);
 
+    if (!m_qry->exec()) qDebug()<<"--CAN'T CHANGE RECORD'S LOGIN"<<m_qry->lastError().text();
 }
 
 void dataBase::changeRecordPass(const int id, const QString newPass)
 {
+    //prepearing password
+    QString salt = m_cypher->generateSalt();
 
+    m_cypher->setKey(QCryptographicHash::hash((masterKey + salt).toUtf8(), QCryptographicHash::Sha256));
+    QString pass = m_cypher->roundsEncr(newPass);
+
+    m_qry->prepare("UPDATE accountsData SET pass = :newPass, salt = :newSalt WHERE id = :id;");
+    m_qry->bindValue(":newPass", pass);
+    m_qry->bindValue(":newSalt", salt);
+    m_qry->bindValue(":id", id);
+
+    if (!m_qry->exec()) qDebug()<<"--CAN'T CHANGE RECORD'S PASS"<<m_qry->lastError().text();
 }
 
-void dataBase::changeRecord(const int id, const QString args[], const bool isName, const bool isLogin, const bool isPass)
+void dataBase::changeRecord(const int id, const QVector<QString> args, const bool isName, const bool isLogin, const bool isPass)
 {
+    //this fun is changing record's values
+    //it is neccesarry to write args in this order: name, login, pass
+    //but if some args don't сhanged, you shouldn't write them
     //id - id of record
     //args[] - new values
-    //bool params define if it must change corresponding field
-
-    if (isName) changeRecordName(id, args[0]);
-    if (isLogin) changeRecordLogin(id, args[1]);
-    if (isPass) changeRecordPass(id, args[2]);
+    //bool params define if it is neccecarry change corresponding field
+    int numOfArgs = 0;
+    if (isName) {
+        numOfArgs++;
+        changeRecordName(id, args[numOfArgs - 1]);
+    }
+    if (isLogin) {
+        numOfArgs++;
+        changeRecordLogin(id, args[numOfArgs - 1]);
+    }
+    if (isPass) {
+        numOfArgs++;
+        changeRecordPass(id, args[numOfArgs - 1]);
+    }
 }
 

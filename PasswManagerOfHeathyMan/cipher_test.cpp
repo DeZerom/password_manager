@@ -1,3 +1,20 @@
+/*
+Copyright 2021, Demid Shikhov
+This file is part of PasswManagerOfHeathyMan.
+
+PasswManagerOfHeathyMan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+PasswManagerOfHeathyMan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with PasswManagerOfHeathyMan.  If not, see <https://www.gnu.org/licenses/>.
+*/
 #include "cipher_test.h"
 
 cipher_test::cipher_test()
@@ -168,16 +185,16 @@ QString cipher_test::XORdecr(const QString cypher_text)
 QString cipher_test::roundsEncr(const QString text)
 {
     QString openT = text; //preparing text
-    if (openT.length() % 4 != 0) {
+    if (openT.length() % 4 != long(0)) {
         int i = 1;
         while ((openT.length() + i) % 4 != 0) i++;
-        openT = (i - 1) + openT;
+        openT = QString::number(i - 1) + openT;
         while (i - 1 > 0) {
             openT += "a";
             i--;
         }
     } else {
-        openT = QChar(3) + openT;
+        openT = QString::number(3) + openT;
         openT += "abc";
     }
 
@@ -258,10 +275,11 @@ QString cipher_test::roundsDecr(const QString cypherT)
         }
     }
 
-    int leftSymbols = res[0].unicode();
+    qDebug()<<res;
+    int countOfLeftSymbols = res.left(1).toInt();
     res = res.right(res.length() - 1);
-    qDebug()<<leftSymbols;
-    if (leftSymbols <= 4) res = res.left(res.length() - leftSymbols);
+    qDebug()<<countOfLeftSymbols;
+    if (countOfLeftSymbols <= 4) res = res.left(res.length() - countOfLeftSymbols);
 
     qDebug()<<res;
     return res;
@@ -293,7 +311,8 @@ QString cipher_test::generateSalt()
 
     QString res = "";
     while (number > 0) {
-        res += number % 1000;
+        int currPart = number % 1000;
+        res += QChar(currPart);
         number /= 1000;
     }
 
