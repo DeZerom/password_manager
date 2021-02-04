@@ -187,16 +187,22 @@ void dataBase::changeRecordPass(const int id, const QString newPass)
 {
     //prepearing password
     QString salt = m_cypher->generateSalt();
-
-    m_cypher->setKey(QCryptographicHash::hash((masterKey + salt).toUtf8(), QCryptographicHash::Sha256));
-    QString pass = m_cypher->roundsEncr(newPass);
-
+    QString pass = preparePass(newPass, salt);
+    //writing in dataBase
     m_qry->prepare("UPDATE accountsData SET pass = :newPass, salt = :newSalt WHERE id = :id;");
     m_qry->bindValue(":newPass", pass);
     m_qry->bindValue(":newSalt", salt);
     m_qry->bindValue(":id", id);
 
     if (!m_qry->exec()) qDebug()<<"--CAN'T CHANGE RECORD'S PASS"<<m_qry->lastError().text();
+}
+
+QString dataBase::preparePass(const QString pass, const QString salt)
+{
+    m_cypher->setKey(QCryptographicHash::hash((masterKey + salt).toUtf8(), QCryptographicHash::Sha256));
+    QString res = m_cypher->roundsEncr(pass);
+
+    return res;
 }
 
 void dataBase::changeRecord(const int id, const QVector<QString> args, const bool isName, const bool isLogin, const bool isPass)
@@ -220,5 +226,10 @@ void dataBase::changeRecord(const int id, const QVector<QString> args, const boo
         numOfArgs++;
         changeRecordPass(id, args[numOfArgs - 1]);
     }
+}
+
+void dataBase::changeUsersPass(const QString newPass)
+{
+
 }
 
