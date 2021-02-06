@@ -29,6 +29,17 @@ reg::reg(bool *RegMarker, QWidget *parent) :
     ui->setupUi(this);
 }
 
+reg::reg(bool *RegMarker, bool changePass, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::reg),
+    ptrToIsRegistred(RegMarker),
+    m_isChngPassRequired(changePass)
+{
+    ui->setupUi(this);
+
+    this->setWindowTitle("Changing password");
+}
+
 reg::~reg()
 {
     delete ui;
@@ -40,7 +51,11 @@ void reg::on_pushButton_clicked()
     QString pswd2 = ui->lineEdit_2->text();
 
     if (pswd1 == pswd2) {
-        db->registration(pswd1.toUtf8());
+        if (m_isChngPassRequired) {
+            db->changeUsersPass(pswd1);
+        } else {
+            db->registration(pswd1.toUtf8());
+        }
         *ptrToIsRegistred = true;
         reg::close();
     } else {

@@ -27,6 +27,8 @@ along with PasswManagerOfHeathyMan.  If not, see <https://www.gnu.org/licenses/>
 #include <cipher_test.h>
 #include <QClipboard>
 #include <changerecord.h>
+#include <login.h>
+#include <reg.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -48,6 +50,8 @@ private slots:
     void on_tableView_doubleClicked(const QModelIndex &index);
 
     void on_changeRecord_clicked();
+
+    void on_changeRecord_2_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -127,3 +127,19 @@ void MainWindow::on_changeRecord_clicked()
 
     m_model->select();
 }
+
+void MainWindow::on_changeRecord_2_clicked()
+{
+    bool marker = false;
+
+    login l(&marker);
+    l.show();
+    l.loop.exec();
+
+    if (marker) {
+        bool regMarker = false;
+        reg r(&regMarker, true);
+        r.show();
+        r.loop.exec();
+    }
+}

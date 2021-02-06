@@ -27,7 +27,26 @@ login::login(bool *ptrToIsLoggedInMarker, QString *ptrToMasterKey, QWidget *pare
     QWidget(parent),
     ui(new Ui::login),
     m_isSuccesfull(ptrToIsLoggedInMarker),
+    m_isMasterKeyGiven(true),
     m_masterKey(ptrToMasterKey)
+{
+    ui->setupUi(this);
+    ui->pushButton_3->hide(); //reg button
+
+    QObject::connect(this, &login::registred, this, &login::changeButtonsToRegConst);
+
+    if (!db->isRegistrated()) {
+        ui->pushButton_3->show();
+        ui->pushButton->setEnabled(false);
+        ui->lineEdit->setEnabled(false);
+    }
+}
+
+login::login(bool *ptrToIsLoggedInMarker, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::login),
+    m_isSuccesfull(ptrToIsLoggedInMarker),
+    m_isMasterKeyGiven(false)
 {
     ui->setupUi(this);
     ui->pushButton_3->hide(); //reg button
@@ -56,7 +75,8 @@ void login::on_pushButton_clicked()
     } else {
         if (db->loginIntoApp(pswd.toUtf8())) {
             *m_isSuccesfull = true;
-            *m_masterKey = QCryptographicHash::hash(QCryptographicHash::hash(pswd.toUtf8(), QCryptographicHash::Sha3_224), QCryptographicHash::Sha3_256);
+            if (m_isMasterKeyGiven)
+                *m_masterKey = QCryptographicHash::hash(QCryptographicHash::hash(pswd.toUtf8(), QCryptographicHash::Sha3_224), QCryptographicHash::Sha3_256);
             loop.exit();
             login::close();
         } else {
@@ -88,14 +108,14 @@ void login::keyPressEvent(QKeyEvent *event)
 
 void login::on_pushButton_3_clicked()
 {
-    reg r(&isRegistred);
+    reg r(&m_isRegistred);
 
     r.show();
     login::hide();
     r.loop.exec();
     login::show();
 
-    if (isRegistred) emit registred();
+    if (m_isRegistred) emit registred();
 }
 
 void login::changeButtonsToRegConst()

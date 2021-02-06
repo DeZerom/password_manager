@@ -230,6 +230,15 @@ void dataBase::changeRecord(const int id, const QVector<QString> args, const boo
 
 void dataBase::changeUsersPass(const QString newPass)
 {
+    QString newPassHash = QString(QCryptographicHash::hash(newPass.toUtf8(), QCryptographicHash::Sha256));
 
+    m_qry->prepare("UPDATE userinfo SET pswd = :newPass");
+    m_qry->bindValue(":newPass", newPassHash);
+
+    if (!m_qry->exec()) {
+        qDebug()<<"--USERS PASS CHANGING FAILURE"<<m_qry->lastError().text();
+    } else {
+        masterKey = QCryptographicHash::hash(QCryptographicHash::hash(newPassHash.toUtf8(), QCryptographicHash::Sha3_224), QCryptographicHash::Sha3_256);
+    }
 }
 

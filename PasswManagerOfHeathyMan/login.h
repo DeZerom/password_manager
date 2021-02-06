@@ -35,6 +35,7 @@ class login : public QWidget
 public:
     explicit login(bool *ptrToIsLoggedInMarker, QString *masterKey, QWidget *parent = nullptr);
     login(QWidget *parent = nullptr);
+    login(bool *ptrToIsLoggedInMarker, QWidget *parent = nullptr);
     ~login();
 
     QEventLoop loop;
@@ -51,11 +52,12 @@ private slots:
 private:
     Ui::login *ui;
     bool *m_isSuccesfull;
+    bool m_isRegistred = false;
+    bool m_isMasterKeyGiven;
     QString *m_masterKey;
-    bool isRegistred = false;
     void closeEvent(QCloseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
-    //void callReg();
+
 
 signals:
     void registred();
