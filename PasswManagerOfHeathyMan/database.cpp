@@ -153,14 +153,23 @@ void dataBase::deleteAcc(const int index)
     }
 }
 
-QString dataBase::getPassword(const QString salt, const QString cypherPass)
+QString dataBase::getPassword(const QString salt, const QString cypherPass, QString ms)
 {
-   QString key = QCryptographicHash::hash((masterKey + salt).toUtf8(), QCryptographicHash::Sha256);
+   QString key = QCryptographicHash::hash((ms + salt).toUtf8(), QCryptographicHash::Sha256);
    m_cypher->setKey(key);
 
    QString password = m_cypher->roundsDecr(cypherPass);
 
    return password;
+}
+
+QString dataBase::getUsersPassHash() //not tested
+{
+    m_qry->prepare("SELECT pswd FROM usersinfo;");
+    if (!m_qry->exec()) qDebug()<<"--CAN'T GET USERS INFO"<<m_qry->lastError().text();
+
+    QString res = m_qry->value("pswd").toString();
+    return res;
 }
 
 void dataBase::changeRecordName(const int id, const QString newName)
@@ -237,8 +246,12 @@ void dataBase::changeUsersPass(const QString newPass)
 
     if (!m_qry->exec()) {
         qDebug()<<"--USERS PASS CHANGING FAILURE"<<m_qry->lastError().text();
-    } else {
-        masterKey = QCryptographicHash::hash(QCryptographicHash::hash(newPassHash.toUtf8(), QCryptographicHash::Sha3_224), QCryptographicHash::Sha3_256);
     }
+}
+
+void dataBase::recypherWithNewMasterKey(const int id, const QString oldMS, QString cypherPass, const QString salt)
+{
+    QString pass = getPassword(salt, cypherPass, oldMS);
+    changeRecordPass(id, pass); //will encrypt with new master key
 }
 

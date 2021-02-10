@@ -33,7 +33,7 @@ class reg : public QWidget
 
 public:
     explicit reg(bool *RegMarker, QWidget *parent = nullptr);
-    reg(bool *RegMarker, bool changePass, QWidget *parent = nullptr);
+    reg(bool *RegMarker, bool changePass = false, QWidget *parent = nullptr);
     ~reg();
 
     QEventLoop loop;

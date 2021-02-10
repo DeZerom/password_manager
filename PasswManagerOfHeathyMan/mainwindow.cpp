@@ -37,9 +37,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_table->setModel(m_model);
     m_table->setColumnWidth(1, 153);
     m_table->setColumnWidth(2, 153);
-    m_table->hideColumn(0);
-    m_table->hideColumn(3);
-    m_table->hideColumn(4);
+    m_table->hideColumn(0); //id
+    m_table->hideColumn(3); //pass
+    m_table->hideColumn(4); //salt
     m_table->show();
 
 
@@ -130,6 +130,8 @@ void MainWindow::on_changeRecord_clicked()
 
 void MainWindow::on_changeRecord_2_clicked()
 {
+    QString oldms = masterKey;
+
     bool marker = false;
 
     login l(&marker);
@@ -138,8 +140,15 @@ void MainWindow::on_changeRecord_2_clicked()
 
     if (marker) {
         bool regMarker = false;
-        reg r(&regMarker, true);
+        reg r(&regMarker, true); //changes master key
         r.show();
         r.loop.exec();
+    }
+
+    for (int i = 0; i < m_model->rowCount(); i++) {
+        int id = m_model->data(m_model->index(i, 0)).toInt();
+        QString salt = m_model->data(m_model->index(i, 4)).toString();
+        QString cypherPass = m_model->data(m_model->index(i, 3)).toString();
+        db->recypherWithNewMasterKey(id, oldms, cypherPass, salt);
     }
 }

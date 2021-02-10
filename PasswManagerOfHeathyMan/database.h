@@ -35,9 +35,11 @@ public:
     void addAcc(const QString name, const QString login, const QString pswd);
     void deleteAcc(const int index);
     void changeRecord(const int id, const QVector<QString> args, const bool isName = false, const bool isLogin = false, const bool isPass = false);
-    void changeUsersPass(const QString newPass);
+    void changeUsersPass(const QString newPass); //changes masterKey variable
+    void recypherWithNewMasterKey(const int id, const QString oldMS, const QString newMS, const QString cypherPass, const QString salt);
     QSqlDatabase getDB();
-    QString getPassword(const QString salt, const QString cypherPass);
+    QString getPassword(const QString salt, const QString cypherPass, QString ms = masterKey);
+    QString getUsersPassHash(); //don't needeed
 
 private:
     void queryConstructor(const QString type, const QString table, const QVariant args[]);
@@ -51,13 +53,13 @@ private:
     QString m_qryStr;
     cipher_test *m_cypher;
 
-    struct qryConstr
+    /*struct qryConstr
     {
         const QString INSERT = "INS";
         const QString SELECT = "SEL";
         const QString USERINFO_TABLE = "userinfo";
     };
-    qryConstr qryConstants;
+    qryConstr qryConstants;*/
 };
 
 #endif // DATABASE_H
