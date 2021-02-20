@@ -1,5 +1,5 @@
 /*
-Copyright 2021, Demid Shikhov
+Copyright 2021, Demid Shikhov <demid2001s@gmail.com>
 This file is part of PasswManagerOfHeathyMan.
 
 PasswManagerOfHeathyMan is free software: you can redistribute it and/or modify

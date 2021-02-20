@@ -1,0 +1,12 @@
+release/changerecord.o
+release/cipher_test.o
+release/database.o
+release/login.o
+release/main.o
+release/mainwindow.o
+release/reg.o
+release/qrc_res.o
+release/moc_changerecord.o
+release/moc_login.o
+release/moc_mainwindow.o
+release/moc_reg.o

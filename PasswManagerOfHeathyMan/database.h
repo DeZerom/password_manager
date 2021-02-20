@@ -1,5 +1,5 @@
 /*
-Copyright 2021, Demid Shikhov
+Copyright 2021, Demid Shikhov <demid2001s@gmail.com>
 This file is part of PasswManagerOfHeathyMan.
 
 PasswManagerOfHeathyMan is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ public:
     void deleteAcc(const int index);
     void changeRecord(const int id, const QVector<QString> args, const bool isName = false, const bool isLogin = false, const bool isPass = false);
     void changeUsersPass(const QString newPass); //changes masterKey variable
-    void recypherWithNewMasterKey(const int id, const QString oldMS, const QString newMS, const QString cypherPass, const QString salt);
+    void recypherWithNewMasterKey(const int id, const QString oldMS, const QString cypherPass, const QString salt);
     QSqlDatabase getDB();
     QString getPassword(const QString salt, const QString cypherPass, QString ms = masterKey);
     QString getUsersPassHash(); //don't needeed

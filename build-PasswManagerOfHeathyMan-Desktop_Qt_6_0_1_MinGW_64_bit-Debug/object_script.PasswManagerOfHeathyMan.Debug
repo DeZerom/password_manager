@@ -5,6 +5,7 @@ debug/login.o
 debug/main.o
 debug/mainwindow.o
 debug/reg.o
+debug/qrc_res.o
 debug/moc_changerecord.o
 debug/moc_login.o
 debug/moc_mainwindow.o

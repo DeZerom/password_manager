@@ -1,4 +1,4 @@
-#Copyright 2021, Demid Shikhov
+#Copyright 2021, Demid Shikhov <demid2001s@gmail.com>
 #This file is part of PasswManagerOfHeathyMan.
 #
 #PasswManagerOfHeathyMan is free software: you can redistribute it and/or modify
@@ -57,3 +57,9 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    man.xml
+
+RESOURCES += \
+    res.qrc
